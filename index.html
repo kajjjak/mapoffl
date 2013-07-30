@@ -1,5 +1,163 @@
-<html>
-	<body>
-		tests
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+	<title>Drivers Teaching App</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+	<!--[if lte IE 8]>
+	   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
+	<![endif]-->
+
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
+	
+	<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+	
+	<script src="vendor/jquery-2.0.0.min.js"></script>
+	<script src="vendor/pouchdb.min.js"></script>
+	<script src="vendor/underscore-1.5.1.min.js"></script>
+	<script src="vendor/backbone.min.js"></script>
+	<script src="vendor/backbone-pouch.min.js"></script>
+	
+	<script src="js/vehicle_data.js"></script>
+	<script src="js/models.js"></script>
+	<script src="js/map-main.js"></script>
+	<script src="js/map-load.js"></script>
+	<script src="js/map-edit.js"></script>
+	<script src="js/openxcutils.js"></script>	
+	
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="../assets/ico/favicon.png">
+  <style>
+		#content {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+    }
+  </style>
+	</head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Driver Teaching app</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Drive</a></li>
+              <li><a href="#save">Save</a></li>
+              <li><a href="#install">Install</a></li>
+              <li><a href="/editor.html">Route</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="content" class="container">
+			<div class="row-fluid">
+			  <div class="span8">
+			  	<div id="map" style="width: 100%; height: 300px"></div>
+			  </div>
+			  <div class="span2">
+		  		<div class="span6">
+		  			<button class="btn btn-primary" type="button" onClick="runDriverSimulation()">Drive</button>
+		  		</div>
+		  		<div class="span6">
+			  		<select id="vehicle_simulation">
+			  			<option value="vehicle_data_test_1">Simple</option>
+			  		</select>		  						  			
+		  		</div>
+		  		<div id="vehicle_simulation_step"></div>
+			  	<div class="vehicle_data">
+						<canvas id="vehicle_speed" width="100" height="100">Your browser does not support HTML5 Canvas.</canvas>		
+						<canvas id="engine_speed" width="100" height="100">Your browser does not support HTML5 Canvas.</canvas>		
+						<canvas id="accelerator_pedal_position" width="100" height="100">Your browser does not support HTML5 Canvas.</canvas>		
+						<div id="vehicle_speed"></div>
+						<div id="vehicle_green"></div>
+						<div id="torque_at_transmission"></div>
+						<div id="engine_speed"></div>
+						<div id="parking_brake_status"></div>
+						<div id="transmission_gear_position"></div>
+						<div id="odometer"></div>
+						<div id="ignition_status"></div>
+						<div id="fuel_consumed_since_restart"></div>
+						<div id="fuel_level"></div>
+						<div id="headlamp_status"></div>
+						<div id="high_beam_status"></div>
+						<div id="brake_pedal_status"></div>
+						<div id="fine_odometer_since_restart"></div>
+						<div id="accelerator_pedal_position"></div>
+			  	</div>
+			  	<ul>
+			  		<li>calculates saving</li>
+			  		<li>shows gallons used</li>
+			  		<li>gives reward for nice driving</li>
+			  		<li>login and storing</li>
+			  		<li>connect reader to android running</li>
+			  	</ul>
+			  </div>
+			</div>
+    </div> <!-- /container -->    
+  </body>
+	<script>
+		map.createMap("map", [42.291595, -83.237617], 16, 18);
+	</script>  
+
+	
+	<script type='text/javascript' src='vendor/gauge.js'></script>
+	<script type='text/javascript'>
+			
+			function createGauge(name, max){
+				window.vehicle_gauges = window.vehicle_gauges || {};
+				var opts = {
+				  lines: 12, // The number of lines to draw
+				  angle: 0.15, // The length of each line
+				  lineWidth: 0.44, // The line thickness
+				  pointer: {
+				    length: 0.9, // The radius of the inner circle
+				    strokeWidth: 0.035, // The rotation offset
+				    color: '#000000' // Fill color
+				  },
+				  limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
+				
+				  colorStart: '#6FADCF',   // Colors
+				  colorStop: '#8FC0DA',    // just experiment with them
+				  strokeColor: '#E0E0E0',   // to see which ones work best for you
+				  generateGradient: true
+				};
+				var gauge = new Gauge(document.getElementById(name)).setOptions(opts); // create sexy gauge!
+				gauge.maxValue = max; // set max gauge value
+				gauge.animationSpeed = 32; // set animation speed (32 is default value)
+				gauge.set(gauge.maxValue*0.1); // set actual value
+				vehicle_gauges[name] = gauge;
+			}
+			
+			createGauge("vehicle_speed", 180);
+			createGauge("engine_speed", 16382/2);
+			
+			gauge_delay_update = 10000;
+      function drawGauge(speed, rpm, fuel){
+      	//drawChartCall(undefined, speed, rpm, fuel);
+      	gauge_delay_update = gauge_delay_update + 1;
+      	if (gauge_delay_update > 100){
+      		if((speed !== undefined) && (speed >= 0)){vehicle_gauges["vehicle_speed"].set(speed);}
+      		if((rpm !== undefined) && (rpm >= 0)){vehicle_gauges["engine_speed"].set(rpm);}
+      		gauge_delay_update = 0;
+      	}
+      }
+      
+      function runDriverSimulation(){
+      	runDriversPathSimulation($('#vehicle_simulation').find(":selected").val());
+      }
+
+    </script>	  
+	
+	
 </html>
