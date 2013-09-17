@@ -1,11 +1,49 @@
 /* requires leafletjs */
 
 _MAPLIB_DEFAULT_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAA4ElEQVRYw+2ZsQkCQRAAD4wEU8ECrMEaHmzC6MoQvg/hmxCE78AaLEAwFYyEdTcweJS/C+TZkQ0mH45nbn8viUgikUI4hP9JOOfskqmE1zThq7IhCYtyVxqSsPFUdiThN3uasHFQZiRh46jMScLGWVmShI1Lbau9CEttq0vCMjHFVnsTLrbao/Boqz0Lf221d+GPVhOEB62mCBs97YRXFOGTsqB8wx2pEi3ppsuUm+6hbCnT2u0X01rMw2ONJQgPGutduCP9NbekzU+mbH6KjfUkXNXY2A+73sDHo0wIA4VfkiVRi8ohOKQAAAAASUVORK5CYII=";
+_MAPLIB_DEFAULT_ICON_IMAGE = "";
+_MAPLIB_DEFAULT_ICON_SHADOW = "";
 
 MapLib = function() {
 	this.layers = {};
 
-	this.setLayerIconByLatLngs = function(layer_name, latlngs, mapping){
+	this.addMarker = function(layer_name, latlng, options){
+		var mrkr = L.marker(latlng);
+		options = options || {};
+		if(options.callback_click){mrkr.on('click', options.callback_click);}
+		if(options.callback_dblclick){mrkr.on('dblclick', options.callback_dblclick);}
+		if(!this.layers[layer_name]){this.layers[layer_name] = new L.LayerGroup();}
+		if(!this.layers[layer_name]._markers){this.layers[layer_name]._markers = [];}
+		mrkr.addTo(this.layers[layer_name]);
+		this.layers[layer_name]._markers.push(mrkr);
+	};
+
+	this.setLayerIconByLatLngs = function(layer_name, objects, mapping, options){
+		/*
+			The layer name
+			List of objects having latlngs
+			Mapping of those objects (for instance if latlngs=[{icon:}])
+		*/
+		var latlngs = [];
+		/*
+		options = options || {};
+		if(!this.layers[layer_name]){this.layers[layer_name] = new L.LayerGroup();}
+		for(var i in objects){
+			this.addMarker(layer_name, [obj_lat, obj_lng], obj_icon, obj_shadow, option.callback_click, option.callback_dblclick);
+		}
+		if (options.trail){
+			options.color = options.color || "green";
+			options.opacity = options.opacity || 0.8;
+			options.weight = options.weight || 8;
+			options.smoothFactor = options.smoothFactor || 0.5;
+			var pl = L.polyline(latlngs, options)
+			pl.addTo(this.layers[layer_name]);
+			this.layers[layer_name].map_bounds = pl.getBounds();
+		}
+		*/
+	};
+
+	this.setLayerLineByLatLngs = function(layer_name, latlngs, options){
 		/*
 			The layer name
 			List of objects having latlngs
@@ -21,7 +59,7 @@ MapLib = function() {
 		pl.addTo(this.layers[layer_name]);
 		this.layers[layer_name].map_bounds = pl.getBounds();
 	};
-
+	
 	this.layerFn = new L.TileLayer.Functional(function (view) {
 			if (view.zoom && view.tile.row && view.tile.column && view.subdomain){
 		    var path = "/kajjjak.map-wgrdoudp/{z}/{y}/{x}.png" 
