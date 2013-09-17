@@ -1,68 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Drivers Teaching App</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
-	<!--[if lte IE 8]>
-	   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
-	<![endif]-->	
-	<script src="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
-	
-	<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-	
-	<script src="/vendor/jquery-2.0.0.min.js"></script>
-	<script src="/vendor/pouchdb.min.js"></script>
-	<script src="/vendor/underscore-1.5.1.min.js"></script>
-	<script src="/vendor/backbone.min.js"></script>
-	<script src="/vendor/backbone-pouch.min.js"></script>
 
-	<script src="/vendor/raphael.2.1.0.min.js"></script>
-	<script src="/vendor/justgage.1.0.1.min.js"></script>
+<!DOCTYPE html> 
+<html> 
+   <head> 
+    <title>MapLib test</title> 
+    <meta charset="utf-8" />
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 
-	<script src="/js/models.js"></script>
-	<script src="/js/map-main.js"></script>
-	<script src="/js/map-load.js"></script>
-	<script src="/js/openxcutils.js"></script>	
-	
-	<script type='text/javascript'>
-     
-      function howGreen(speed, gear, rpm, acceleration_pedal){
-      	//http://www.epa.gov/otaq/models/ngm/420p05001.pdf
-      	window.green = window.green || {};
-				var gears = {"first":1, "second":2, "third":3, "fourth":4, "fifth":5, "sixth":6, "seventh":7, "eighth":8, "reverse":1, "neutral":0};
-				var gears_efficency = {0:0.87, 1:0.722, 2:0.809, 3:0.87, 4:0.87, 5:0.87, 6:0.87, 7:0.87, 8:0.87}; // based on Bishop & Kluger, 1996
-				window.green.gear_efficiency = gears_efficency[gears[gear]] + 13; //scale upp to 1
-				window.green.rpm_efficiency = window.green.gear_efficiency;
-				window.green.overal_efficiency = (window.green.gear_efficiency+window.green.rpm_efficiency)/2.0;
-				
-				if (acceleration_pedal){
-					if ((acceleration_pedal < window.green.acceleration_pedal) && (speed > window.green.speed)){
-						window.green.overal_efficiency = 1;	
-					}				
-				}
-				green.acceleration_pedal = acceleration_pedal;
-				green.speed = speed;
-      }
-      
-    </script>	
-</head>
-<body>
-	<div class="container">
-		<div class="row-fluid">
-		  <div class="span8">
-		  	<div id="map" style="width: 100%; height: 400px"></div>
-		  </div>
-		  <div class="span2">
-		  	<div id='chart_div'></div>
-		  </div>
-		</div>
-	</div>
-	<script>
-		map.createMap("map", [42.291595, -83.237617], 16, 18);
-	</script>
-
-</body>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+		<!--[if lte IE 8]>
+		    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+		<![endif]-->
+		<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+		<script src="/libs/leaflet.functionaltilelayer.js"></script>
+		<script src="/js/maplib.js"></script>
+    </head>
+    <body> 
+    	<div id="map" style="height:400px;width:100%;"></div>
+    </body>
+    <script>
+    	mapLib.create($("#map"));
+    </script>
 </html>
