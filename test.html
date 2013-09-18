@@ -22,7 +22,7 @@
     	
     	mapLib.setLayerLineByLatLngs("test_layer", [[64.1404809, -21.9113811], [64.14809, -21.9123811], [64.104809, -21.3113811]]);
     	//mapLib.setLayerIconByLatLngs("test_layer", [{"lat":64.1404809, "lon":-21.9113811], ["lat":64.14809, "lon":-21.9123811], ["lat":64.104809, "lon":-21.3113811]]);
-    	mapLib.addMarker("vodoo", [64.1404809, -21.9113811], {callback_click:function(){alert("ok");}});
+    	mapLib.addMarker("vodoo", [64.1404809, -21.9113811], {popup:"hello", callback_click:function(){alert("ok");}});
     	mapLib.showLayer("vodoo", true, true);
     	mapLib.showLayer("test_layer", true, true);
     </script>
