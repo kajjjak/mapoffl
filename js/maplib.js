@@ -12,13 +12,14 @@ MapLib = function() {
 		options = options || {};
 		if(options.callback_click){mrkr.on('click', options.callback_click);}
 		if(options.callback_dblclick){mrkr.on('dblclick', options.callback_dblclick);}
+		if(options.popup){mrkr.bindPopup(options.popup);}		
 		if(!this.layers[layer_name]){this.layers[layer_name] = new L.LayerGroup();}
 		if(!this.layers[layer_name]._markers){this.layers[layer_name]._markers = [];}
 		mrkr.addTo(this.layers[layer_name]);
 		this.layers[layer_name]._markers.push(mrkr);
 	};
 
-	this.setLayerIconByLatLngs = function(layer_name, objects, mapping, options){
+	this.setLayerIconByObjects = function(layer_name, objects, mapping, options){
 		/*
 			The layer name
 			List of objects having latlngs
@@ -121,7 +122,7 @@ MapLib = function() {
 		}else{
 			this.map.removeLayer(this.layers[layer_name]);
 		}
-		if(fitbounds){
+		if(fitbounds && this.layers[layer_name].map_bounds){
 			this.map.fitBounds(this.layers[layer_name].map_bounds);	
 		}
 		return true;
